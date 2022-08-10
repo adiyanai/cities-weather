@@ -1,0 +1,11 @@
+weather:
+  apiKey: 6f0951ef7ee14c14931102115223107
+  historyUrl: http://api.weatherapi.com/v1/history.json
+  currentUrl: http://api.weatherapi.com/v1/current.json
+  futureUrl: http://api.weatherapi.com/v1/future.json
+
+cacheTtl: 60 #in minutes
+
+server:
+  error:
+    include-message: always
