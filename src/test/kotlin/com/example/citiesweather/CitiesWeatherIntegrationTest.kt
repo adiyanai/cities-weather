@@ -1,7 +1,6 @@
 package com.example.citiesweather
 
 import com.example.citiesweather.dto.WeatherResponseDto
-import com.example.citiesweather.dto.toMapResponse
 import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
@@ -18,36 +17,36 @@ class CitiesWeatherIntegrationTest(@Autowired val client: WebTestClient) {
 
     @Test
     fun `get history weather with humidity`() {
-        val acceptedResult = toMapResponse(WeatherResponseDto(18.0, 78.0, "Light rain shower"))
+        val acceptedResult = WeatherResponseDto(18.0, 78.0, "Light rain shower")
         runBlocking {
             client.get()
                 .uri("/api/weather/history?city=Milano&temperature_scale_type=celsius&date=2014-05-18&humidity=true")
                 .exchange().expectStatus().isOk
-                .expectBody(Map::class.java).isEqualTo(acceptedResult)
+                .expectBody(WeatherResponseDto::class.java).isEqualTo(acceptedResult)
         }
     }
 
     @Test
     fun `get history weather without humidity`() {
-        val acceptedResult = toMapResponse(WeatherResponseDto(18.0, null, "Light rain shower"))
+        val acceptedResult = WeatherResponseDto(18.0, null, "Light rain shower")
         runBlocking {
             client.get()
                 .uri("/api/weather/history?city=Milano&temperature_scale_type=celsius&date=2014-05-18&humidity=false")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange().expectStatus().isOk
-                .expectBody(Map::class.java).isEqualTo(acceptedResult)
+                .expectBody(WeatherResponseDto::class.java).isEqualTo(acceptedResult)
         }
     }
 
     @Test
     fun `get history weather with Fahrenheit temperature scale type`() {
-        val acceptedResult = toMapResponse(WeatherResponseDto(64.4, 78.0, "Light rain shower"))
+        val acceptedResult = WeatherResponseDto(64.4, 78.0, "Light rain shower")
         runBlocking {
             client.get()
                 .uri("/api/weather/history?city=Milano&temperature_scale_type=fahrenheit&date=2014-05-18&humidity=true")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange().expectStatus().isOk
-                .expectBody(Map::class.java).isEqualTo(acceptedResult)
+                .expectBody(WeatherResponseDto::class.java).isEqualTo(acceptedResult)
         }
     }
 
@@ -110,8 +109,8 @@ class CitiesWeatherIntegrationTest(@Autowired val client: WebTestClient) {
                 .uri("/api/weather/future?city=paris&temperature_scale_type=CELSIUS&date=$nextMonthDate&humidity=true")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange().expectStatus().isOk
-                .expectBody<Map<String, Any>>()
-                .consumeWith { Assertions.assertThat(it.responseBody?.get("humidity")).isNotNull }
+                .expectBody<WeatherResponseDto>()
+                .consumeWith { Assertions.assertThat(it.responseBody?.humidity).isNotNull()}
         }
     }
 
@@ -123,8 +122,8 @@ class CitiesWeatherIntegrationTest(@Autowired val client: WebTestClient) {
                 .uri("/api/weather/future?city=paris&temperature_scale_type=CELSIUS&date=$nextMonthDate&humidity=false")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange().expectStatus().isOk
-                .expectBody<Map<String, Any>>()
-                .consumeWith { Assertions.assertThat(it.responseBody?.get("humidity")).isNull() }
+                .expectBody<WeatherResponseDto>()
+                .consumeWith { Assertions.assertThat(it.responseBody?.humidity).isNull() }
         }
     }
 
@@ -146,8 +145,8 @@ class CitiesWeatherIntegrationTest(@Autowired val client: WebTestClient) {
                 .uri("/api/weather/current?city=Tel Aviv&temperature_scale_type=celsius&humidity=true")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange().expectStatus().isOk
-                .expectBody<Map<String, Any>>()
-                .consumeWith { Assertions.assertThat(it.responseBody?.get("humidity")).isNotNull }
+                .expectBody<WeatherResponseDto>()
+                .consumeWith { Assertions.assertThat(it.responseBody?.humidity).isNotNull }
         }
     }
 
@@ -158,8 +157,8 @@ class CitiesWeatherIntegrationTest(@Autowired val client: WebTestClient) {
                 .uri("/api/weather/current?city=Tel Aviv&temperature_scale_type=Fahrenheit&humidity=false")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange().expectStatus().isOk
-                .expectBody<Map<String, Any>>()
-                .consumeWith { Assertions.assertThat(it.responseBody?.get("humidity")).isNull() }
+                .expectBody<WeatherResponseDto>()
+                .consumeWith { Assertions.assertThat(it.responseBody?.humidity).isNull() }
         }
 
     }
